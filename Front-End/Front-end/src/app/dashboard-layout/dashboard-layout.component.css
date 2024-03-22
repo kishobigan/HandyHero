@@ -37,6 +37,8 @@ body {
 }
 .drawer_item_box {
   border-radius: 1vh;
+  margin: 0;
+  padding: 0;
 }
 .drawer_item_box:hover {
   color: white;
@@ -46,4 +48,26 @@ body {
 
 .drawer_icon, .drawer_text {
   width: auto;
+}
+.drawer_icon {
+  padding: 4px;
+}
+
+
+@media (max-width: 768px) {
+  .drawer {
+    width: 20%; /* Adjust width for smaller screens */
+    min-width: 50px; /* Adjust minimum width accordingly */
+  }
+
+  .drawer_text {
+    display: none;
+  }
+
+  .drawer_item_box hr {
+    display: none;
+  }
+  .logo_text{
+    display: none;
+  }
 }
