@@ -1,0 +1,49 @@
+body {
+  background-color: #EBE1B4;
+  min-height: 100vh;
+}
+.drawer {
+  background-color: white;
+}
+.dash_body {
+  /*background-color: black;*/
+}
+.logo {
+  height: 15vh;
+  /*background-color: magenta;*/
+}
+.navigation {
+  height: 70vh;
+  /*background-color: green;*/
+}
+.drawer_bottom {
+  height: 15vh;
+  align-items: center;
+}
+.logo, .navigation, .drawer_bottom {
+  display: flex;
+  flex-direction: column;
+  /*align-items: center;*/
+  justify-content: center;
+}
+.logo {
+  text-align: center;
+}
+.logo_text {
+  font-family: "Inika", serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 35px;
+}
+.drawer_item_box {
+  border-radius: 1vh;
+}
+.drawer_item_box:hover {
+  color: white;
+  background-color: black;
+  cursor: pointer;
+}
+
+.drawer_icon, .drawer_text {
+  width: auto;
+}

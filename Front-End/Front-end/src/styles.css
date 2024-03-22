@@ -1,5 +1,6 @@
 @import "../node_modules/bootstrap/dist/css/bootstrap.css";
 @import url('https://fonts.googleapis.com/css2?family=Inika:wght@400;700&display=swap');
+@import "../node_modules/@fortawesome/fontawesome-free/css/all.css";
 body {
   font-family: "Inika", serif;
   font-style: normal;

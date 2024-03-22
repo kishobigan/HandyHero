@@ -83,5 +83,6 @@ export class LoginComponent {
       console.log(this.passwordError);
       console.log(this.roleError)
     }
+    localStorage.setItem('role','customer')
   }
 }
