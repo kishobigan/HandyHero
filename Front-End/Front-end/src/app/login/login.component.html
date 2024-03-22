@@ -1,28 +1,25 @@
-<body [ngStyle]="{backgroundImage:'url(' + backGroundImage + ')'}">
-<div class="">
-  <div class="row">
-    <div class="col-lg-6 login-section1 container-fluid d-flex align-items-center justify-content-center flex-column">
-      <p class="login_title">Login</p>
-      <p class="login_desc">Field Work management Platform</p>
-      <p class="login_slogan">Join with us and make your work easier</p>
-    </div>
-    <div class="col-lg-6 login-section2  d-flex align-items-center justify-content-center">
-      <div class="col-lg-8 p-3 mx-auto login_operation_container rounded-3 shadow-lg">
-        <p class="login_container_title pt-5 pb-2 px-5">Log In To Your Account</p>
-        <form (ngSubmit)="login()" #loginForm="ngForm">
-          <input type="text" placeholder="Please Enter Your Email Here" class=" p-3 input_box my-1 rounded-3 mb-3" id="email" name="email" ngModel>
-          <p class="error-msg">{{emailError}}</p>
-          <input type="password" id="password" name="password" placeholder="Please Enter Your Password Here" class="p-3 input_box my-1 rounded-3" ngModel>
-          <p class="error-msg">{{passwordError}}</p>
-          <br>
-          <a class="login_link forgot_password_link">forgot password?</a>
-          <br>
-          <button type="submit" class="_primaryButton py-2 px-3 mb-2">Login</button>
-          <br>
-          <a class="login_link pb-5" routerLink="/signup" routerLinkActive="active">New user?Sign up</a>
-        </form>
+<div class="p-3 mx-auto rounded-3">
+    <p class="login_container_title pt-5 pb-2 px-5">Log In To Your Account</p>
+    <form (ngSubmit)="login()" #loginForm="ngForm">
+      <input (input)="onEmailChange($event)" type="text" placeholder="Please Enter Your Email Here" class=" p-3 input_box my-1 rounded-3 mb-3" id="email" name="email" ngModel>
+      <p *ngIf="emailError" class="error-msg">{{emailError}}</p>
+      <input (input)="onPasswordChange($event)" type="password" id="password" name="password" placeholder="Please Enter Your Password Here" class="p-3 input_box my-1 rounded-3" ngModel>
+      <p *ngIf="passwordError" class="error-msg">{{passwordError}}</p>
+      <br>
+      <label class="pb-1 px-4">
+        <input (input)="onRoleChange($event)" type="radio" name="options" value="customer" [(ngModel)]="role">
+        Customer
+      </label>
+      <label class="px-4">
+        <input (input)="onRoleChange($event)" type="radio" name="options" value="fieldWorker" [(ngModel)]="role">
+        Field Worker
+      </label>
+      <p *ngIf="roleError" class="error-msg">{{roleError}}</p>
+      <div class="row">
+        <a class="login_link forgot_password_link pb-3">forgot password?</a>
       </div>
-    </div>
+      <button type="submit" class="_primaryButton py-2 px-3 mb-2">Login</button>
+      <br>
+      <a class="login_link pb-5" routerLink="/auth/signup" routerLinkActive="active">New user?Sign up</a>
+    </form>
   </div>
-</div>
-</body>

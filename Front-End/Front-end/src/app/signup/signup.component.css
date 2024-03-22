@@ -41,6 +41,8 @@ body {
 
 .signUp_operation_container {
   background-color: #A79557;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 
@@ -57,18 +59,20 @@ body {
   height: 40px;
   border: none;
 }
-.login_link {
+.error-msg {
+  color: red;
+}
+.select_container {
+  position: relative;
+}
+._selection {
+  z-index: 1000;
+}
+.file_handling_text {
   color: white;
-  text-decoration: none;
+  font-weight: 300;
+  text-align: left;
 }
-.login_link:hover {
-  color: black;
-}
-.forgot_password_link {
-  float: right;
-}
-
-
 
 
 @media (max-width: 768px) {
