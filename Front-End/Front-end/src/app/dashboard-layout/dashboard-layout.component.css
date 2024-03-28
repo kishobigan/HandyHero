@@ -39,6 +39,7 @@ body {
   border-radius: 1vh;
   margin: 0;
   padding: 0;
+  text-align: center;
 }
 .drawer_item_box:hover {
   color: white;
@@ -52,6 +53,11 @@ body {
 .drawer_icon {
   padding: 4px;
 }
+.active {
+  color: white;
+  background-color: black;
+}
+
 
 
 @media (max-width: 768px) {

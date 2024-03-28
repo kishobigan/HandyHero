@@ -5,6 +5,8 @@ import {LandingComponent} from "./landing/landing.component";
 import {AuthLayoutComponent} from "./auth-layout/auth-layout.component"
 import {OTPVerificationComponent} from "./otpverification/otpverification.component";
 import {DashboardLayoutComponent} from "./dashboard-layout/dashboard-layout.component";
+import {ProjectsComponent} from "./customer/projects/projects.component";
+import {FindComponent} from "./customer/find/find.component";
 
 export const routes: Routes = [
   {
@@ -20,7 +22,8 @@ export const routes: Routes = [
     path:'dashboard',
     component: DashboardLayoutComponent,
     children: [
-
+      {path: 'projects', component: ProjectsComponent},
+      {path: 'find', component: FindComponent}
     ]
   },
   {path:'', component:LandingComponent, pathMatch:'full'},
