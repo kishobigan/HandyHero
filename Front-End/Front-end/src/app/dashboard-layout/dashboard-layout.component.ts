@@ -29,8 +29,9 @@ export class DashboardLayoutComponent {
   updateActiveState() {
     let currentUrl = this.router.url;
     let urlSegment: string[] = currentUrl.split('/');
-    let lastPart = urlSegment[urlSegment.length - 1];
+    let lastPart = urlSegment[2];
     this.active = lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
+    console.log(urlSegment)
   }
   isDrawerItemActive(drawerItemText: string): boolean {
     return drawerItemText == this.active;

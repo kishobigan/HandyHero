@@ -71,7 +71,7 @@ export class FindComponent {
   ratingNumber: number = 3;
 
   employees: {name:string,profilePhoto:string, workerType:string, district:string, ratingValue:string}[] = [
-    {name:'Sugeevan',profilePhoto:'',workerType: 'Painter', district:'mullaithivu',ratingValue:'1-star'},
+    {name:'Sugeevan',profilePhoto:'',workerType: 'Painter', district:'mullaithivu',ratingValue:'3-star'},
     {name:'Sugeevan',profilePhoto:'',workerType: 'Plumber', district:'jaffna',ratingValue:'4-star'},
     {name:'Sugeevan',profilePhoto:'',workerType: 'Mesan', district:'vavuniya',ratingValue:'3-star'},
     {name:'Sugeevan',profilePhoto:'',workerType: 'Carpenter', district:'manar',ratingValue:'2-star'},
