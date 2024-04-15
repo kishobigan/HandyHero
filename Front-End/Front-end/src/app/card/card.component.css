@@ -56,4 +56,6 @@
 .text-green {
   color: green; /* Apply this color for 'completed' status */
 }
-
+.text-red {
+  color: red;
+}

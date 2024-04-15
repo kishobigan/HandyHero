@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgForOf} from "@angular/common";
 import {StarRatingComponent} from "../../star-rating/star-rating.component";
+import {FindWorkerService} from "../../../Services/Customer/find-worker.service";
 
 @Component({
   selector: 'app-find',
@@ -14,7 +15,7 @@ import {StarRatingComponent} from "../../star-rating/star-rating.component";
   templateUrl: './find.component.html',
   styleUrl: './find.component.css'
 })
-export class FindComponent {
+export class FindComponent implements OnInit{
   noProfilePhoto = "https://res.cloudinary.com/dpmqdx02n/image/upload/v1711616632/noProfile_jwjkro.jpg";
 
 
@@ -54,7 +55,7 @@ export class FindComponent {
   district = '';
   rate = ''
 
-  constructor() {
+  constructor(private findWorkerService: FindWorkerService) {
 
   }
 
@@ -70,13 +71,7 @@ export class FindComponent {
 
   ratingNumber: number = 3;
 
-  employees: {name:string,profilePhoto:string, workerType:string, district:string, ratingValue:string}[] = [
-    {name:'Sugeevan',profilePhoto:'',workerType: 'Painter', district:'mullaithivu',ratingValue:'3-star'},
-    {name:'Sugeevan',profilePhoto:'',workerType: 'Plumber', district:'jaffna',ratingValue:'4-star'},
-    {name:'Sugeevan',profilePhoto:'',workerType: 'Mesan', district:'vavuniya',ratingValue:'3-star'},
-    {name:'Sugeevan',profilePhoto:'',workerType: 'Carpenter', district:'manar',ratingValue:'2-star'},
-    {name:'Sugeevan',profilePhoto:'',workerType: 'Electrician', district:'kilinochchi',ratingValue:'5-star'},
-  ];
+  employees: any[] = [];
 
   convertRatingToInt(ratingValue: string): number {
     switch (ratingValue) {
@@ -95,5 +90,17 @@ export class FindComponent {
     }
   }
 
+  ngOnInit() {
+    this.findWorkerService.getAllWorkers().subscribe(
+      (data:any[]) => {
+        this.employees = data;
+        this.employees = data.filter(worker => worker.status === '1');
+        console.log(data);
+      },
+      (error) => {
+        console.error("Error while get workers", error)
+      }
+    );
+  }
 
 }

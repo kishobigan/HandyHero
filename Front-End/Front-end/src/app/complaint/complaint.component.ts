@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
+import {MakeComplaintService} from "../../Services/common/make-complaint.service";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Component({
   selector: 'app-complaint',
@@ -26,7 +28,7 @@ export class ComplaintComponent {
     {email:'k@k.com',name:'',complaint:'sgbsb'},
   ]
 
-  constructor() {
+  constructor(private makeComplaintService: MakeComplaintService) {
     this.role = localStorage.getItem('role');
   }
 
@@ -59,19 +61,27 @@ export class ComplaintComponent {
     }
   }
 
-  onComplaint(){
-    if (this.complaintError === '' && this.emailError === ''){
-      let complaintData: { email: string, name: string, complaint: string }[] = [
-        {
-          email: this.email,
-          name: this.name,
-          complaint: this.complaint
-        }
-      ];
-      console.log(complaintData)
-    }else {
-      console.log("please fill all field")
+  onComplaint() {
+    if (this.complaintError === '' && this.emailError === '') {
+      let complainant = localStorage.getItem('Id');
+      if (complainant != null){
+        this.makeComplaintService.makeComplaint(parseInt(complainant),this.email,this.complaint).subscribe(
+          (response) => {
+            console.log("complaint succes");
+            this.email = "";
+            this.complaint = "";
+          },
+          (error) => {
+            console.error("Error while complaint", error)
+          }
+        );
+      }else {
+
+      }
+    } else {
+      console.log("Please fill all fields");
     }
   }
+
 
 }

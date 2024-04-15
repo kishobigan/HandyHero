@@ -8,7 +8,7 @@ namespace backend.Services.Infrastructure
         public bool SignUp(Customer customer);
         public bool SignOut();
         public bool ResetPassword(Customer customer);
-        public IEnumerable<Project> getMyProject(int Id);
+        public IEnumerable<Object> getMyProject(int Id);
         public IEnumerable<FieldWorker> findWorker(string WorkType);
         public bool createProject(Project project);
 

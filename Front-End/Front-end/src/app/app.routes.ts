@@ -9,6 +9,7 @@ import {ProjectsComponent} from "./customer/projects/projects.component";
 import {FindComponent} from "./customer/find/find.component";
 import {ChatComponent} from "./chat/chat.component";
 import {ComplaintComponent} from "./complaint/complaint.component";
+import {RouteGuard} from "../Common/RouteGuard";
 
 export const routes: Routes = [
   {
@@ -23,6 +24,7 @@ export const routes: Routes = [
   {
     path:'dashboard',
     component: DashboardLayoutComponent,
+    canActivate: [RouteGuard],
     children: [
       {path: 'projects', component: ProjectsComponent},
       {path: 'find', component: FindComponent},

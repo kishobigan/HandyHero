@@ -59,9 +59,27 @@ namespace backend.Services.Repository
             return _context.Customer.FirstOrDefault(c => c.Email == Email);
         }
 
-        public IEnumerable<Project> getMyProject(int Id)
+        public IEnumerable<Object> getMyProject(int Id)
         {
-            var myProjects = _context.Project.Where(p => p.ProjectOwner == Id).ToList();
+            var myProjects = _context.Project
+        .Where(p => p.ProjectOwner == Id)
+        .Select(p => new
+        {
+            ProjectId = p.ProjectId,
+            ProjectName = p.ProjectName,
+            ProjectOwner = p.ProjectOwner,
+            ProjectWorker = p.ProjectWorker,
+            ProjectWorkerName = _context.FieldWorker
+                                .Where(w => w.Id == p.ProjectWorker)
+                                .Select(w => w.Name)
+                                .FirstOrDefault(),
+            ProjectLocation = p.ProjectLocation,
+            ProjectBudget = p.ProjectBudget,
+            ProjectDuration = p.ProjectDuration,
+            ProjectType = p.ProjectType,
+            ProjectStatus = p.ProjectStatus
+        })
+        .ToList();
 
             if (myProjects.Any())
             {

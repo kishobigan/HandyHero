@@ -4,19 +4,19 @@
       <img [src]="profilePhotoUrl" alt="Profile Photo"/>
     </div>
     <div>
-      <span class="card_title">{{ project?.name }}</span>
+      <span class="card_title">{{ project?.projectType }}</span>
       <br>
-      <span class="card_sub_title">{{ project?.workerName }}</span>
+      <span class="card_sub_title">{{ project?.projectWorkerName }}</span>
     </div>
     <div class="card_details my-3">
       <div class="card_detail_1 col-sm-6">
         Status
         <br>
-        <span class="details_child" [ngClass]="getStatusColor()">{{ project?.status }}</span></div>
+        <span class="details_child" [ngClass]="getStatusColor()">{{ project?.statusText }}</span></div>
       <div class="card_detail_2 col-sm-6">
         <span>Budget</span>
         <br>
-        <span class="details_child">{{ project?.budget }}</span>
+        <span class="details_child">{{ project?.projectBudget }}</span>
       </div>
     </div>
     <div>

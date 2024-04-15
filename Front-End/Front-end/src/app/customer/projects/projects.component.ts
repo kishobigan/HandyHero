@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CardComponent} from "../../card/card.component";
 import {NgForOf} from "@angular/common";
+import {ProjectsService} from "../../../Services/Customer/projects.service";
 
 @Component({
   selector: 'app-projects',
@@ -12,43 +13,23 @@ import {NgForOf} from "@angular/common";
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.css'
 })
-export class ProjectsComponent {
+export class ProjectsComponent implements OnInit{
 
-  projects:{name:string, profilePhoto:string, workerName:string, status:string, budget:string}[] = [
-    {
-      name: 'painting',
-      profilePhoto: '',
-      workerName: 'Sugeevan',
-      status: 'On Going',
-      budget: '10000'
-    },
-    {
-      name: 'painting',
-      profilePhoto: '',
-      workerName: 'Sugeevan',
-      status: 'Completed',
-      budget: '10000'
-    },
-    {
-      name: 'painting',
-      profilePhoto: '',
-      workerName: 'Sugeevan',
-      status: 'On Going',
-      budget: '10000'
-    },
-    {
-      name: 'painting',
-      profilePhoto: '',
-      workerName: 'Sugeevan',
-      status: 'Completed',
-      budget: '10000'
-    },
-    {
-      name: 'painting',
-      profilePhoto: '',
-      workerName: 'Sugeevan',
-      status: 'On Going',
-      budget: '10000'
-    }
-  ]
+  projects: any[] = [];
+
+  constructor(private projectService: ProjectsService) {
+  }
+
+  ngOnInit() {
+    let userId = localStorage.getItem('Id');
+    this.projectService.getMyProjects(userId).subscribe(
+      (data) => {
+        console.log(data)
+        this.projects = data;
+      },
+      (error) => {
+        console.log("error while getting projects : ", error);
+      }
+    )
+  }
 }
