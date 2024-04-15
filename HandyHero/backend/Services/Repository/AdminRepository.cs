@@ -1,17 +1,22 @@
-﻿using backend.Database;
-using backend.Models;
+﻿using backend.Models;
 using backend.Services.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using backend.Database;
+using backend.Common;
 
 namespace backend.Services.Repository
 {
     public class AdminRepository : IAdmin
     {
         private ApplicationDbContext _context;
-        private IHttpContextAccessor _contextAccessor;
-        public AdminRepository(ApplicationDbContext context, IHttpContextAccessor contextAccessor)
+        private readonly IConfiguration _config;
+        public AdminRepository(ApplicationDbContext context, IConfiguration config)
         {
             _context = context;
-            _contextAccessor = contextAccessor;
+            _config = config;
         }
 
         public bool BlockFieldWorker(FieldWorker fieldWorker)
@@ -31,6 +36,8 @@ namespace backend.Services.Repository
         {
             try
             {
+                PasswordHash ph = new PasswordHash();
+                admin.password = ph.HashPassword(admin.password);
                 _context.Admin.Add(admin);
                 _context.SaveChanges(true);
                 return true;
@@ -64,15 +71,12 @@ namespace backend.Services.Repository
                 return false;
             }
 
+            PasswordHash ph = new PasswordHash();
             
-            
-            bool isValidPassword = admin.password.Equals(password);
+            bool isValidPassword = ph.VerifyPassword(password, admin.password);
 
             if (isValidPassword)
             {
-                _contextAccessor.HttpContext.Session.SetString("name", admin.Name);
-                _contextAccessor.HttpContext.Session.SetString("Id", admin.Id.ToString());
-                _contextAccessor.HttpContext.Session.SetString("isLoggedIn", "True");
                 return true;
             }else
             {
@@ -84,14 +88,110 @@ namespace backend.Services.Repository
         {
             try
             {
-                _contextAccessor.HttpContext.Session.Remove("name");
-                _contextAccessor.HttpContext.Session.Remove("Id");
-                _contextAccessor.HttpContext.Session.Remove("isLoggedIn");
                 return true;
             }catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
+
+        public ClaimsPrincipal validateToken(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                if (validatedToken != null)
+                {
+                    return new ClaimsPrincipal(new ClaimsIdentity(((JwtSecurityToken)validatedToken).Claims));
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+    
+
+        public Admin GetAdminByEmail(string Email)
+        {
+            return _context.Admin.FirstOrDefault(x => x.Email == Email);
+        }
+
+        public Admin GetAdminById(int Id)
+        {
+            return _context.Admin.FirstOrDefault(x => x.Id == Id);
+        }
+
+        public bool AcceptFieldWorker(int fieldWorkerId, int adminId)
+        {
+            try
+            {
+                FieldWorker fieldWorker = _context.FieldWorker.Find(fieldWorkerId);
+                if (fieldWorker != null)
+                {
+                    fieldWorker.Status = "true";
+                    fieldWorker.AcceptOrRejectBy = adminId;
+                    _context.FieldWorker.Update(fieldWorker);
+                    _context.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
+        public bool RejectFieldWorker(int fieldWorkerId, int adminId)
+        {
+            try
+            {
+                FieldWorker fieldWorker = _context.FieldWorker.Find(fieldWorkerId);
+                if (fieldWorker != null)
+                {
+                    fieldWorker.Status = "false";
+                    fieldWorker.AcceptOrRejectBy = adminId;
+                    _context.FieldWorker.Update(fieldWorker);
+                    _context.SaveChanges();
+                    return true;
+                }
+                else
+                {
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
+        public ICollection<Complaint> gettAllComplaints()
+        {
+            return _context.Complaint.ToList();
+        }
     }
+
 }

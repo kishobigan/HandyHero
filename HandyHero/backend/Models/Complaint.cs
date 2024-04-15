@@ -8,7 +8,7 @@ namespace backend.Models
         public int ComplaintId { get; set; }
 
         [Required]
-        public string Complainant { get;}
+        public string Complainant { get; set; }
 
         [Required]
         public string Accused { get; set;}

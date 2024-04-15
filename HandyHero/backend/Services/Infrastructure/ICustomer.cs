@@ -11,5 +11,8 @@ namespace backend.Services.Infrastructure
         public IEnumerable<Project> getMyProject(int Id);
         public IEnumerable<FieldWorker> findWorker(string WorkType);
         public bool createProject(Project project);
+
+        public Customer getCustomerByMail(string Email);
+        public bool createComplaint(Complaint complaint);
     }
 }

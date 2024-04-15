@@ -1,4 +1,5 @@
 ﻿using backend.Models;
+using System.Security.Claims;
 
 namespace backend.Services.Infrastructure
 {
@@ -11,6 +12,16 @@ namespace backend.Services.Infrastructure
 
         public bool BlockFieldWorker(FieldWorker fieldWorker);
         public bool IsAdmin(Admin admin);
+
+        public ClaimsPrincipal validateToken(string token);
+
+        public Admin GetAdminByEmail(string Email);
+        public Admin GetAdminById(int Id);
+
+        public bool AcceptFieldWorker(int fieldWorkerId, int adminId);
+        public bool RejectFieldWorker(int fieldWorkerId, int adminId);
+
+        public ICollection<Complaint> gettAllComplaints();
 
         public bool Logout();
     }

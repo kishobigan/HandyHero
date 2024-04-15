@@ -21,6 +21,7 @@ namespace backend.Services.Repository
                 return true;
             }catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 return false;
             }
         }

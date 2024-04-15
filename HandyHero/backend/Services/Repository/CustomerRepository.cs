@@ -1,4 +1,5 @@
-﻿using backend.Database;
+﻿using backend.Common;
+using backend.Database;
 using backend.Models;
 using backend.Services.Infrastructure;
 
@@ -8,12 +9,26 @@ namespace backend.Services.Repository
     public class CustomerRepository : ICustomer
     {
         private ApplicationDbContext _context;
-        private IHttpContextAccessor _contextAccessor;
-        public CustomerRepository(ApplicationDbContext context, IHttpContextAccessor contextAccessor)
+
+        public CustomerRepository(ApplicationDbContext context, IConfiguration config)
         {
             _context = context;
-            _contextAccessor = contextAccessor;
         }
+
+        public bool createComplaint(Complaint complaint)
+        {
+            try
+            {
+                ComplaintRepository comp = new ComplaintRepository(_context);
+                comp.createComplaint(complaint);
+                return true;
+            }catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+
         public bool createProject(Project project)
         {
             try
@@ -39,6 +54,11 @@ namespace backend.Services.Repository
             }
         }
 
+        public Customer getCustomerByMail(string Email)
+        {
+            return _context.Customer.FirstOrDefault(c => c.Email == Email);
+        }
+
         public IEnumerable<Project> getMyProject(int Id)
         {
             var myProjects = _context.Project.Where(p => p.ProjectOwner == Id).ToList();
@@ -61,18 +81,19 @@ namespace backend.Services.Repository
                 return false;
             }
 
-            bool isValidPassword = customer.Password.Equals(password);
+            PasswordHash ph = new PasswordHash();
+
+            bool isValidPassword = ph.VerifyPassword(password,customer.Password);
 
             if (isValidPassword)
             {
-                _contextAccessor.HttpContext.Session.SetString("name", customer.Name);
-                _contextAccessor.HttpContext.Session.SetString("Id", customer.Id.ToString());
-                _contextAccessor.HttpContext.Session.SetString("isLoggedIn", "True");
                 return true;
             }else
             {
                 return false;
             }
+
+            
         }
 
         public bool ResetPassword(Customer customer)
@@ -92,12 +113,10 @@ namespace backend.Services.Repository
         {
             try
             {
-                _contextAccessor.HttpContext.Session.Remove("name");
-                _contextAccessor.HttpContext.Session.Remove("Id");
-                _contextAccessor.HttpContext.Session.Remove("isLoggedIn");
                 return true;
             }catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 return false;
             }
         }
@@ -106,11 +125,14 @@ namespace backend.Services.Repository
         {
             try
             {
+                PasswordHash ph = new PasswordHash();
+                customer.Password = ph.HashPassword(customer.Password);
                 _context.Customer.Add(customer);
                 _context.SaveChanges();
                 return true;
             }catch(Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 return false;
             }
         }
