@@ -52,6 +52,7 @@
           <div *ngIf="role == 'admin'"
                class="p-3 drawer_item_box row"
                [class.active]="isDrawerItemActive('Dashboard')"
+               [routerLink]="['/dashboard/requests']"
           >
             <i class="fa-solid fa-table-columns drawer_icon"></i>
             <p class="drawer_text">Dashboard</p>
@@ -60,6 +61,7 @@
           <div *ngIf="role == 'admin'"
                class="p-3 drawer_item_box row"
                [class.active]="isDrawerItemActive('Users')"
+               [routerLink]="['/dashboard/users']"
           >
             <i class="fa-solid fa-users drawer_icon"></i>
             <p class="drawer_text">Users</p>
@@ -68,6 +70,7 @@
           <div *ngIf="role == 'admin'"
                class="p-3 drawer_item_box row"
                [class.active]="isDrawerItemActive('FieldWorkers')"
+               [routerLink]="['/dashboard/fieldWorkers']"
           >
             <i class="fa-solid fa-user-tie drawer_icon"></i>
             <p class="drawer_text">Field Workers</p>
@@ -83,7 +86,7 @@
           </div>
         </div>
       </div>
-      <div class="drawer_bottom mx-auto">
+      <div class="drawer_bottom mx-auto" (click)="logout()">
         <div class="drawer_item_box row p-2">
           <i class="fa-solid fa-arrow-right-from-bracket drawer_icon"></i>
           <p class="drawer_text">Logout</p>

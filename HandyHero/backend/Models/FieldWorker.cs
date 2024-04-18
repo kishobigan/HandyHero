@@ -17,13 +17,18 @@ namespace backend.Models
         [Required]
         public string Password { get; set; }
         [Required]
+        public string District { get; set;}
+
+        [Required]
         public string WorkType { get; set; }
         public DateTime DOB { get; set; }
         public string NIC { get; set; }
         public string ProfileImage { get; set; }
 
-        private string[] Certificates { get; set; }
-        private string[] ExperienceLetter { get; set; }
+        public string[] Certificates { get; set; }
+        public string[] ExperienceLetter { get; set; }
+        [Required]
+        public int Rating { get; set; }
 
         [Required]
         public string Status { get; set; } = "false";

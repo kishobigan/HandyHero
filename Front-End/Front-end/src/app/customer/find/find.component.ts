@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormsModule} from "@angular/forms";
-import {NgForOf} from "@angular/common";
-import {StarRatingComponent} from "../../star-rating/star-rating.component";
-import {FindWorkerService} from "../../../Services/Customer/find-worker.service";
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from "@angular/forms";
+import { NgForOf } from "@angular/common";
+import { StarRatingComponent } from "../../star-rating/star-rating.component";
+import { FindWorkerService } from "../../../Services/Customer/find-worker.service";
 
 @Component({
   selector: 'app-find',
@@ -13,11 +13,10 @@ import {FindWorkerService} from "../../../Services/Customer/find-worker.service"
     StarRatingComponent
   ],
   templateUrl: './find.component.html',
-  styleUrl: './find.component.css'
+  styleUrls: ['./find.component.css']
 })
-export class FindComponent implements OnInit{
+export class FindComponent implements OnInit {
   noProfilePhoto = "https://res.cloudinary.com/dpmqdx02n/image/upload/v1711616632/noProfile_jwjkro.jpg";
-
 
   districts: { name: string, number: number }[] = [
     {name: 'Colombo', number: 1},
@@ -33,7 +32,7 @@ export class FindComponent implements OnInit{
     {name: 'Kilinochchi', number: 11},
     {name: 'Mannar', number: 12},
     {name: 'Vavuniya', number: 13},
-    {name: 'Mullaitivu', number: 14},
+    {name: 'Mullaithivu', number: 14},
     {name: 'Batticaloa', number: 15},
     {name: 'Ampara', number: 16},
     {name: 'Trincomalee', number: 17},
@@ -46,32 +45,73 @@ export class FindComponent implements OnInit{
     {name: 'Ratnapura', number: 24},
     {name: 'Kegalle', number: 25}
   ];
-  rating: string[] = ['5-star', '4-star', '3-star', '2-star', '1-star'];
 
+  rating: string[] = ['5-star', '4-star', '3-star', '2-star', '1-star'];
 
   selectedDistrict: string = '';
   selectedRating: string = '';
 
-  district = '';
-  rate = ''
+  employees: any[] = [];
+  employeesStatistic: any[] = [];
 
-  constructor(private findWorkerService: FindWorkerService) {
+  constructor(private findWorkerService: FindWorkerService) { }
 
+  ngOnInit() {
+    this.loadWorkers();
+  }
+
+  loadWorkers() {
+    this.findWorkerService.getAllWorkers().subscribe(
+      (data: any[]) => {
+        this.employees = data.filter(worker => worker.status === 'true');
+        this.employeesStatistic = data.filter(worker => worker.status === 'true');
+        this.filterEmployees();
+      },
+      (error) => {
+        console.error("Error while getting workers", error);
+      }
+    );
   }
 
   onDistrictSortChange(event: any) {
-    this.district = event.target.value;
-    console.log(this.district)
+    this.selectedDistrict = event.target.value;
+    this.filterEmployees();
   }
 
   onRatingChange(event: any) {
     this.selectedRating = event.target.value;
-    console.log(this.selectedRating);
+    this.filterEmployees();
   }
 
-  ratingNumber: number = 3;
+  filterEmployees() {
+    const districtFilter = this.selectedDistrict !== '' ?
+      (employee: any) => employee.district === this.selectedDistrict :
+      () => true;
 
-  employees: any[] = [];
+    const ratingFilter = this.selectedRating !== '' ?
+      (employee: any) => employee.rating === this.convertRatingToInt(this.selectedRating) :
+      () => true;
+
+    this.employees = this.employees.filter(employee => districtFilter(employee) && ratingFilter(employee));
+  }
+
+  searchWord = "";
+  onSearchChange(event:any){
+    this.searchWord = event.target.value
+    this.searchEmployee();
+  }
+  searchEmployee() {
+    if (this.searchWord.trim() === '') {
+      this.loadWorkers();
+      return;
+    }
+
+    const searchFilter = (employee: any) =>
+      employee.workType.toLowerCase().includes(this.searchWord.toLowerCase());
+
+    this.employees = this.employeesStatistic.filter(searchFilter);
+  }
+
 
   convertRatingToInt(ratingValue: string): number {
     switch (ratingValue) {
@@ -89,18 +129,4 @@ export class FindComponent implements OnInit{
         return 0;
     }
   }
-
-  ngOnInit() {
-    this.findWorkerService.getAllWorkers().subscribe(
-      (data:any[]) => {
-        this.employees = data;
-        this.employees = data.filter(worker => worker.status === '1');
-        console.log(data);
-      },
-      (error) => {
-        console.error("Error while get workers", error)
-      }
-    );
-  }
-
 }

@@ -163,9 +163,9 @@ namespace backend.Controllers
         }
 
         [HttpPatch("acceptFieldWorker")]
-        public IActionResult acceptFieldWorker([FromQuery] int adminId, int fieldWorkerId)
+        public IActionResult acceptFieldWorker([FromQuery] int adminId, string email)
         {
-            var result = _admin.AcceptFieldWorker(fieldWorkerId, adminId);
+            var result = _admin.AcceptFieldWorker(email, adminId);
             if (result)
             {
                 return Ok();
@@ -177,9 +177,9 @@ namespace backend.Controllers
         }
 
         [HttpPatch("rejectFieldWorker")]
-        public IActionResult rejectFieldWorker([FromQuery] int adminId, int fieldWorkerId)
+        public IActionResult rejectFieldWorker([FromQuery] int adminId, string email)
         {
-            var result = _admin.RejectFieldWorker(fieldWorkerId, adminId);
+            var result = _admin.RejectFieldWorker(email, adminId);
             if (result)
             {
                 return Ok();

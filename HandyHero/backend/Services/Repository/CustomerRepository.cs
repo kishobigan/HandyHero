@@ -42,6 +42,12 @@ namespace backend.Services.Repository
             }
         }
 
+        public Customer findCustomerById(int Id)
+        {
+            Customer customer = _context.Customer.FirstOrDefault(x => x.Id == Id);
+            return customer;
+        }
+
         public IEnumerable<FieldWorker> findWorker(string WorkType)
         {
             var workers = _context.FieldWorker.Where(c => c.WorkType == WorkType).ToList();

@@ -2,15 +2,19 @@
 using backend.Database;
 using backend.Models;
 using backend.Services.Infrastructure;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 
 namespace backend.Services.Repository
 {
     public class FieldWorkerRepository : IFieldWorker
     {
         private ApplicationDbContext _context;
-        public FieldWorkerRepository(ApplicationDbContext context)
+        private readonly Cloudinary _cloudinary;
+        public FieldWorkerRepository(ApplicationDbContext context, Cloudinary cloudinary)
         {
             _context = context;
+            _cloudinary = cloudinary;
         }
         public bool acceptProject(Project project)
         {
@@ -25,6 +29,27 @@ namespace backend.Services.Repository
                 Console.WriteLine(ex.ToString());
                 return false;
             }
+        }
+
+        public bool createComplaint(Complaint complaint)
+        {
+            try
+            {
+                ComplaintRepository comp = new ComplaintRepository(_context);
+                comp.createComplaint(complaint);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+
+        public FieldWorker findFieldWorkerById(int Id)
+        {
+            FieldWorker worker = _context.FieldWorker.FirstOrDefault(f => f.Id == Id);
+            return worker;
         }
 
         public FieldWorker GetFieldWorkerByEmail(string email)
@@ -108,6 +133,65 @@ namespace backend.Services.Repository
             }
         }
 
+        public string UploadFile(IFormFile file)
+        {
+            try
+            {
+                // Check if the file exists
+                if (file == null || file.Length == 0)
+                {
+                    throw new ArgumentNullException(nameof(file), "No file uploaded");
+                }
 
+                // Upload file to Cloudinary
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(file.FileName, file.OpenReadStream())
+                };
+
+                var uploadResult = _cloudinary.Upload(uploadParams);
+
+                // Return the URL of the uploaded file
+                return uploadResult.Uri.AbsoluteUri;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        
+        }
+
+        public string[] UploadFiles(IFormFile[] files)
+        {
+            try
+            {
+                if (files == null || files.Length == 0)
+                {
+                    throw new ArgumentNullException(nameof(files), "No files uploaded");
+                }
+
+                var uploadedUrls = new List<string>();
+
+                foreach (var file in files)
+                {
+                    var uploadParams = new ImageUploadParams
+                    {
+                        File = new FileDescription(file.FileName, file.OpenReadStream())
+                    };
+
+                    var uploadResult = _cloudinary.Upload(uploadParams);
+                    uploadedUrls.Add(uploadResult.Uri.AbsoluteUri);
+                }
+
+                return uploadedUrls.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        
+        }
     }
 }

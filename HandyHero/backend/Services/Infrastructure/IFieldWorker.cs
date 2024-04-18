@@ -15,5 +15,13 @@ namespace backend.Services.Infrastructure
         public bool isUser(string email);
 
         public ICollection<Project> GetProjects(int id);
+
+        public bool createComplaint(Complaint complaint);
+
+        public FieldWorker findFieldWorkerById(int Id);
+
+        public string UploadFile(IFormFile file);
+
+        public string[] UploadFiles(IFormFile[] files);
     }
 }

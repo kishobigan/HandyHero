@@ -141,13 +141,23 @@ namespace backend.Migrations
                     b.Property<int>("AcceptOrRejectBy")
                         .HasColumnType("int");
 
+                    b.Property<string>("Certificates")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ExperienceLetter")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NIC")
                         .HasColumnType("nvarchar(max)");
@@ -164,6 +174,9 @@ namespace backend.Migrations
 
                     b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()

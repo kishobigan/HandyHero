@@ -14,5 +14,7 @@ namespace backend.Services.Infrastructure
 
         public Customer getCustomerByMail(string Email);
         public bool createComplaint(Complaint complaint);
+
+        public Customer findCustomerById(int Id);
     }
 }

@@ -1,10 +1,11 @@
-﻿using backend.Models;
+﻿using backend.DTO;
+using backend.Models;
 
 namespace backend.Services.Infrastructure
 {
     public interface IComplaint
     {
-        public IEnumerable<Complaint> getAllComplaints();
+        public List<ComplaintView> GetComplaints();
         public bool createComplaint(Complaint complaint);
     }
 }

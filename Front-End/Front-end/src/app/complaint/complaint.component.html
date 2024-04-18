@@ -50,7 +50,7 @@
         <tr>
           <th class="py-1">#</th>
           <th class="py-1">Email</th>
-          <th class="py-1">Name</th>
+          <th class="py-1">Status</th>
           <th class="py-1">Complaint</th>
           <th class="py-1">Action</th>
         </tr>
@@ -58,11 +58,18 @@
         <tbody>
         <tr *ngFor="let complaint of complaints; let i = index">
           <td class="py-2 px-2">{{ i + 1 }}</td>
-          <td class="py-2 px-2">{{ complaint.email }}</td>
-          <td class="py-2 px-2">{{ complaint.name }}</td>
-          <td class="py-2 px-2">{{ complaint.complaint }}</td>
+          <td class="py-2 px-2">{{ complaint.accusedEmail }}</td>
+          <td class="py-2 px-2">{{ complaint.status }}</td>
+          <td class="py-2 px-2">{{ complaint.complaintMessage }}</td>
           <td class="py-2 px-2 text-center">
-            <button class="_primaryButton px-3 py-1">Block</button>
+            <button
+              class="_primaryButton px-3 py-1"
+              (click)="block(complaint.accusedEmail)"
+              *ngIf="complaint.status == 'true'"
+            >
+              Block
+            </button>
+            <span *ngIf="complaint.status == 'false'">Already blocked</span>
           </td>
         </tr>
         </tbody>

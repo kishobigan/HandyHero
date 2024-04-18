@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {FormsModule} from "@angular/forms";
+import {CloudinaryModule} from '@cloudinary/ng';
 
 @Component({
   selector: 'app-root',
@@ -10,11 +11,12 @@ import {FormsModule} from "@angular/forms";
     FormsModule,
     RouterLink,
     RouterLinkActive,
+    CloudinaryModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Front-end';
+  title = 'HandyHero';
 
 }

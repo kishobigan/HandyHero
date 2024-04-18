@@ -3,7 +3,7 @@
     <p class="project_title">Projects</p>
   </div>
   <div class="search_div">
-    <input class="form-control me-2 search_box shadow-lg" type="search" placeholder="Search Your Project" aria-label="Search" />
+    <input class="form-control me-2 search_box shadow-lg" (input)="onSearchChange($event)" type="search" placeholder="Search Your Project" aria-label="Search" />
   </div>
   <div class="card_container row">
     <app-card *ngFor="let project of projects" [project]="project"></app-card>

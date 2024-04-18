@@ -6,6 +6,8 @@ using System.Security.Claims;
 using System.Text;
 using backend.Database;
 using backend.Common;
+using backend.DTO;
+using CloudinaryDotNet;
 
 namespace backend.Services.Repository
 {
@@ -13,10 +15,12 @@ namespace backend.Services.Repository
     {
         private ApplicationDbContext _context;
         private readonly IConfiguration _config;
-        public AdminRepository(ApplicationDbContext context, IConfiguration config)
+        private readonly Cloudinary _cloudinary;
+        public AdminRepository(ApplicationDbContext context, IConfiguration config, Cloudinary cloudinary)
         {
             _context = context;
             _config = config;
+            _cloudinary = cloudinary;
         }
 
         public bool BlockFieldWorker(FieldWorker fieldWorker)
@@ -28,6 +32,7 @@ namespace backend.Services.Repository
                 return true;
             }catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
@@ -124,8 +129,6 @@ namespace backend.Services.Repository
             }
         }
 
-    
-
         public Admin GetAdminByEmail(string Email)
         {
             return _context.Admin.FirstOrDefault(x => x.Email == Email);
@@ -136,11 +139,13 @@ namespace backend.Services.Repository
             return _context.Admin.FirstOrDefault(x => x.Id == Id);
         }
 
-        public bool AcceptFieldWorker(int fieldWorkerId, int adminId)
+        public bool AcceptFieldWorker(string fieldworkerEmail, int adminId)
         {
             try
             {
-                FieldWorker fieldWorker = _context.FieldWorker.Find(fieldWorkerId);
+
+                FieldWorkerRepository _fieldWorker = new FieldWorkerRepository(_context,_cloudinary);
+                FieldWorker fieldWorker = _fieldWorker.GetFieldWorkerByEmail(fieldworkerEmail);
                 if (fieldWorker != null)
                 {
                     fieldWorker.Status = "true";
@@ -151,7 +156,7 @@ namespace backend.Services.Repository
                 }
                 else
                 {
-                    
+
                     return false;
                 }
             }
@@ -162,11 +167,13 @@ namespace backend.Services.Repository
             }
         }
 
-        public bool RejectFieldWorker(int fieldWorkerId, int adminId)
+        public bool RejectFieldWorker(string fieldworkerEmail, int adminId)
         {
             try
             {
-                FieldWorker fieldWorker = _context.FieldWorker.Find(fieldWorkerId);
+                
+                FieldWorkerRepository _fieldWorker = new FieldWorkerRepository(_context, _cloudinary);
+                FieldWorker fieldWorker = _fieldWorker.GetFieldWorkerByEmail(fieldworkerEmail);
                 if (fieldWorker != null)
                 {
                     fieldWorker.Status = "false";
@@ -188,9 +195,10 @@ namespace backend.Services.Repository
             }
         }
 
-        public ICollection<Complaint> gettAllComplaints()
+        public List<ComplaintView> gettAllComplaints()
         {
-            return _context.Complaint.ToList();
+            ComplaintRepository comp = new ComplaintRepository(_context);
+            return comp.GetComplaints();
         }
     }
 

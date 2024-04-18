@@ -32,26 +32,34 @@
       </select>
       <p *ngIf="roleError" class="error-msg">{{roleError}}</p>
     </div>
+    <div class="select_container">
+      <select [(ngModel)]="district" (input)="onDistrictChange($event)" name="district" class="input_box rounded-3 mb-3 _selection">
+        <option value="" selected disabled>Select Your District</option>
+        <option value="fieldWorker">Mulliathivu</option>
+        <option value="customer">Vavuniya</option>
+      </select>
+      <p *ngIf="districtError" class="error-msg">{{districtError}}</p>
+    </div>
     <input *ngIf="role == 'fieldWorker'" (input)="onDOBChange($event)" type="date" placeholder="Enter Your Date of Birth" name="dob" class="p-3 input_box my-1 rounded-3 mb-3">
     <p *ngIf="dobError" class="error-msg">{{dobError}}</p>
     <div *ngIf="role == 'fieldWorker'">
       <p class="file_handling_text px-3">Please Upload Your Profile Photo Here</p>
-      <input type="file" class="input_box my-1 rounded-3 mb-3">
+      <input type="file" class="input_box my-1 rounded-3 mb-3" (input)="onProfilePhotoChange($event)">
       <p class="error-msg">error</p>
     </div>
     <div *ngIf="role == 'fieldWorker'">
       <p class="file_handling_text px-3">Please Upload Your NIC Here</p>
-      <input type="file" class="input_box my-1 rounded-3 mb-3">
+      <input type="file" class="input_box my-1 rounded-3 mb-3" (input)="onNICChange($event)">
       <p class="error-msg">error</p>
     </div>
     <div *ngIf="role == 'fieldWorker'">
       <p class="file_handling_text px-3">Please Upload Your Certificates Here</p>
-      <input type="file" class="input_box my-1 rounded-3 mb-3">
+      <input type="file" class="input_box my-1 rounded-3 mb-3" (input)="onCertificatesChange($event)">
       <p class="error-msg">error</p>
     </div>
     <div *ngIf="role == 'fieldWorker'">
       <p class="file_handling_text px-3">Please Upload Your Experience Letter Here</p>
-      <input type="file" class="input_box my-1 rounded-3 mb-3">
+      <input type="file" class="input_box my-1 rounded-3 mb-3" (input)="onExperienceLetterChange($event)">
       <p class="error-msg">error</p>
     </div>
     <button type="submit" class="_primaryButton py-2 px-3 mb-2">{{buttonText}}</button>

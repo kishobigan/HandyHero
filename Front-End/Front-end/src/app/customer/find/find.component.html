@@ -2,7 +2,9 @@
   <p class="find_title">Find a Worker</p>
   <div class="search_div">
     <input class="form-control me-2 search_box shadow-lg" type="search" placeholder="Search For Worker"
-           aria-label="Search"/>
+           aria-label="Search"
+            (input)="onSearchChange($event)"
+    />
   </div>
   <div class="find_filter my-3 mx-auto">
     <div class="find_location col-lg-6">
@@ -30,7 +32,7 @@
         <span class="employeeDistrict">{{ employee.district }}</span>
       </div>
       <div class="rating">
-        <app-star-rating [rating]="convertRatingToInt(employee.ratingValue)"></app-star-rating>
+        <app-star-rating [rating]="employee.rating"></app-star-rating>
       </div>
       <div>
         <button class="_primaryButton p-2">Hire</button>

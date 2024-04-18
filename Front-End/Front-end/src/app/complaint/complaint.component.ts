@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {MakeComplaintService} from "../../Services/common/make-complaint.service";
 import {error} from "@angular/compiler-cli/src/transformers/util";
+import {FieldWorkerHandleService} from "../../Services/Admin/field-worker-handle.service";
 
 @Component({
   selector: 'app-complaint',
@@ -13,7 +14,7 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
   templateUrl: './complaint.component.html',
   styleUrl: './complaint.component.css'
 })
-export class ComplaintComponent {
+export class ComplaintComponent implements OnInit{
 
   role: any = '';
   email = '';
@@ -23,14 +24,27 @@ export class ComplaintComponent {
   emailError = '';
   complaintError = '';
 
-  complaints: {email:string,name:string,complaint:string}[] = [
-    {email:'k@k.com',name:'kisho',complaint:'sgbsb'},
-    {email:'k@k.com',name:'',complaint:'sgbsb'},
-  ]
+  complaints: any[] = [];
 
-  constructor(private makeComplaintService: MakeComplaintService) {
+  constructor(private makeComplaintService: MakeComplaintService, private workerHandle: FieldWorkerHandleService) {
     this.role = localStorage.getItem('role');
   }
+
+  ngOnInit() {
+    let role = localStorage.getItem('role') ?? '';
+    if (role === 'admin') {
+      this.makeComplaintService.getAllComplaint().subscribe(
+        (data: any) => {
+          this.complaints = data.body;
+          console.log(this.complaints)
+        },
+        (error) => {
+          console.error("error while get data", error);
+        }
+      );
+    }
+  }
+
 
   onEmailChange(event:any){
     this.email = event.target.value;
@@ -61,6 +75,7 @@ export class ComplaintComponent {
     }
   }
 
+
   onComplaint() {
     if (this.complaintError === '' && this.emailError === '') {
       let complainant = localStorage.getItem('Id');
@@ -70,6 +85,7 @@ export class ComplaintComponent {
             console.log("complaint succes");
             this.email = "";
             this.complaint = "";
+            alert("Your Complaint is successfully submitted to Admin")
           },
           (error) => {
             console.error("Error while complaint", error)
@@ -83,5 +99,26 @@ export class ComplaintComponent {
     }
   }
 
+  blockedList: any[] = [];
+
+  isBlock(mail:string){
+    return this.blockedList.includes(mail);
+  }
+  block(email: string) {
+    let userId = Number(localStorage.getItem('Id'));
+    this.workerHandle.block(userId, email).subscribe(
+      (response) => {
+        console.log("Blocked successfully:", email);
+      },
+      (error) => {
+        console.error("Error while blocking:", error);
+        // Optionally, handle error here
+      }
+    );
+  }
+
+
+
 
 }
+

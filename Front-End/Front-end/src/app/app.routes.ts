@@ -10,6 +10,9 @@ import {FindComponent} from "./customer/find/find.component";
 import {ChatComponent} from "./chat/chat.component";
 import {ComplaintComponent} from "./complaint/complaint.component";
 import {RouteGuard} from "../Common/RouteGuard";
+import {WorkerRequestComponent} from "./Admin/worker-request/worker-request.component";
+import {WorkersComponent} from "./Admin/workers/workers.component";
+import {UsersComponent} from "./Admin/users/users.component";
 
 export const routes: Routes = [
   {
@@ -29,6 +32,17 @@ export const routes: Routes = [
       {path: 'projects', component: ProjectsComponent},
       {path: 'find', component: FindComponent},
       {path:'chat', component: ChatComponent},
+      {path: 'complaint', component: ComplaintComponent}
+    ]
+  },
+  {
+    path: "dashboard",
+    component: DashboardLayoutComponent,
+    canActivate: [RouteGuard],
+    children: [
+      {path: 'requests', component: WorkerRequestComponent},
+      {path: 'fieldWorkers', component: WorkersComponent},
+      {path: 'users', component: UsersComponent},
       {path: 'complaint', component: ComplaintComponent}
     ]
   },

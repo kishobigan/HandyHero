@@ -14,7 +14,7 @@ export class CardComponent {
   noProfilePhoto = "https://res.cloudinary.com/dpmqdx02n/image/upload/v1711616632/noProfile_jwjkro.jpg";
 
   @Input() project: {
-    projectType: string;
+    projectName: string;
     profilePhoto: string;
     projectWorkerName: string;
     projectStatus: any;

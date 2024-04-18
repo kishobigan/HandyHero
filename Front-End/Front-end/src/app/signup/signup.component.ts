@@ -1,7 +1,8 @@
 import {Component} from '@angular/core';
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {FormsModule} from "@angular/forms";
+import {SignUpService} from "../../Services/sign-up.service";
 
 @Component({
   selector: 'app-signup',
@@ -28,6 +29,7 @@ export class SignupComponent {
   confirmPassword = '';
   role = '';
 
+  district = '';
   dob = '';
   workType = '';
 
@@ -40,6 +42,14 @@ export class SignupComponent {
 
   dobError = '';
   workTypeError = '';
+  districtError = '';
+  certificatesFile: File | undefined;
+  experienceLettersFile: File | undefined;
+  NICFile: File | undefined;
+  profileFile: File | undefined;
+
+  constructor(private sign: SignUpService, private router:Router) {
+  }
 
 
   isEmpty(text: any) {
@@ -110,6 +120,15 @@ export class SignupComponent {
     }
   }
 
+  onDistrictChange(event: any){
+    this.district = event.target.value;
+    if (this.district.trim() == ''){
+      this.districtError = "Please enter valid district"
+    }else {
+      this.district = "";
+    }
+  }
+
   onDOBChange(event:any){
     this.dob = event.target.value;
     if (this.dob.trim() == ''){
@@ -128,6 +147,25 @@ export class SignupComponent {
     }
   }
 
+  onProfilePhotoChange(event: any) {
+    this.profileFile = event.target.files[0];
+  }
+
+  // Method to handle NIC file input change
+  onNICChange(event: any) {
+    this.NICFile = event.target.files[0];
+  }
+
+  // Method to handle certificates file input change
+  onCertificatesChange(event: any) {
+    this.certificatesFile = event.target.files[0];
+  }
+
+  // Method to handle experience letter file input change
+  onExperienceLetterChange(event: any) {
+    this.experienceLettersFile = event.target.files[0];
+  }
+
   signup() {
     if (this.role == 'customer') {
       if (
@@ -138,22 +176,23 @@ export class SignupComponent {
         this.confirmPasswordError.trim() == '' &&
         this.roleError.trim() == ''
       ) {
-        let signupData: {
-          name: string,
-          email: string,
-          phoneNumber: string,
-          password: string,
-          role: string
-        } = {
-          name: this.name,
-          email: this.email,
-          phoneNumber: this.phoneNumber,
-          password: this.password,
-          role: this.role
-        }
-        console.log(signupData);
+        let signupData = {
+          Name: this.name,
+          Email: this.email,
+          PhoneNumber: this.phoneNumber,
+          Password: this.password,
+        };
+        this.sign.customerSignup(signupData).subscribe(
+          response => {
+            alert("Your Account is created")
+            this.router.navigate(['auth/login'])
+          },
+          error => {
+            console.error("Error while customer creating account", error);
+          }
+        );
       }
-    }else if (this.role == 'fieldWorker'){
+    } else if (this.role == 'fieldWorker') {
       if (
         this.nameError.trim() == '' &&
         this.emailError.trim() == '' &&
@@ -164,28 +203,47 @@ export class SignupComponent {
         this.workTypeError.trim() == '' &&
         this.dobError.trim() == ''
       ) {
-        let signupData: {
-          name: string,
-          email: string,
-          phoneNumber: string,
-          password: string,
-          role: string,
-          workType: string,
-          dob:string
-        } = {
-          name: this.name,
-          email: this.email,
-          phoneNumber: this.phoneNumber,
-          password: this.password,
-          role: this.role,
-          workType: this.workType,
-          dob: this.dob
+        const formData = new FormData();
+
+        // Append other form data
+        formData.append('Name', this.name);
+        formData.append('Email', this.email);
+        formData.append('PhoneNumber', this.phoneNumber);
+        formData.append('Password', this.password);
+        formData.append('Role', this.role);
+        formData.append('WorkType', this.workType);
+        formData.append('DOB', this.dob);
+        formData.append('District', this.district);
+
+        if (this.certificatesFile) {
+          formData.append('certificates', this.certificatesFile);
         }
-        console.log(signupData);
+        if (this.experienceLettersFile) {
+          formData.append('experienceLetters', this.experienceLettersFile);
+        }
+        if (this.NICFile) {
+          formData.append('NIC', this.NICFile);
+        }
+        if (this.profileFile) {
+          formData.append('profile', this.profileFile);
+        }
+
+        this.sign.fieldWorkerSignup(formData).subscribe(
+          response => {
+            alert("Your Request is forwarded");
+            this.router.navigate(['auth/login'])
+          },
+          error => {
+            console.error("Error while field worker creating account", error);
+          }
+        );
       }
-    }else {
-      console.log("Please select valid user Role")
+    } else {
+      console.log("Please select a valid user role");
     }
   }
+
+
+
 
 }

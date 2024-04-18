@@ -1,4 +1,5 @@
-﻿using backend.Models;
+﻿using backend.DTO;
+using backend.Models;
 using System.Security.Claims;
 
 namespace backend.Services.Infrastructure
@@ -18,10 +19,10 @@ namespace backend.Services.Infrastructure
         public Admin GetAdminByEmail(string Email);
         public Admin GetAdminById(int Id);
 
-        public bool AcceptFieldWorker(int fieldWorkerId, int adminId);
-        public bool RejectFieldWorker(int fieldWorkerId, int adminId);
+        public bool AcceptFieldWorker(string fieldworkerEmail, int adminId);
+        public bool RejectFieldWorker(string fieldWorkerId, int adminId);
 
-        public ICollection<Complaint> gettAllComplaints();
+        public List<ComplaintView> gettAllComplaints();
 
         public bool Logout();
     }

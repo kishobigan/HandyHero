@@ -97,7 +97,7 @@ export class LoginComponent {
               })            }
             else {
               localStorage.setItem('role','admin')
-              this.router.navigate(['/other-route']).then(r => {
+              this.router.navigate(['/dashboard/requests']).then(r => {
                 console.log('login success')
               }).catch(error => {
                 console.log('Navigation failed', error);

@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
+using CloudinaryDotNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
+
+builder.Services.AddSingleton<Cloudinary>(new Cloudinary(new Account(
+    builder.Configuration["Cloudinary:CloudName"],
+    builder.Configuration["Cloudinary:ApiKey"],
+    builder.Configuration["Cloudinary:ApiSecret"]
+)));
+
 
 builder.Services.AddScoped<IAdmin, AdminRepository>();
 builder.Services.AddScoped<ICustomer, CustomerRepository>();

@@ -1,4 +1,5 @@
 ﻿using backend.Database;
+using backend.DTO;
 using backend.Models;
 using backend.Services.Infrastructure;
 
@@ -26,9 +27,30 @@ namespace backend.Services.Repository
             }
         }
 
-        public IEnumerable<Complaint> getAllComplaints()
+        public List<ComplaintView> GetComplaints()
         {
-            return _context.Complaint;
+            var complaints = _context.Complaint.ToList();
+            var complaintViewModels = new List<ComplaintView>();
+
+            foreach (var complaint in complaints)
+            {
+                var accusedEmail = complaint.Accused;
+                var accused = _context.FieldWorker.FirstOrDefault(f => f.Email == accusedEmail);
+
+                if (accused != null)
+                {
+                    var complaintViewModel = new ComplaintView
+                    {
+                        AccusedEmail = accused.Email,
+                        Status = accused.Status,
+                        ComplaintMessage = complaint.ComplaintMessage
+                    };
+
+                    complaintViewModels.Add(complaintViewModel);
+                }
+            }
+
+            return complaintViewModels;
         }
     }
 }

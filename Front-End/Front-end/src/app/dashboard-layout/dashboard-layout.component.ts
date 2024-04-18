@@ -31,10 +31,14 @@ export class DashboardLayoutComponent {
     let urlSegment: string[] = currentUrl.split('/');
     let lastPart = urlSegment[2];
     this.active = lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
-    console.log(urlSegment)
   }
   isDrawerItemActive(drawerItemText: string): boolean {
     return drawerItemText == this.active;
+  }
+
+  logout(){
+    localStorage.clear();
+    this.router.navigate(["/auth/login"])
   }
 
 }

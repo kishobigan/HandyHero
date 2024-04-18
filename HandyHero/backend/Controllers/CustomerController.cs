@@ -1,9 +1,11 @@
-﻿using backend.Models;
+﻿using backend.DTO;
+using backend.Models;
 using backend.Services.Infrastructure;
 using backend.Services.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
 using System.Text;
 
@@ -109,25 +111,43 @@ namespace backend.Controllers
         }
 
         [HttpPost("complaint")]
-        public IActionResult makeComplaint([FromBody] Complaint complaint)
+        public IActionResult makeComplaint([FromBody] ComplaintRequest complaint)
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("Ithu vera");
-                return BadRequest(ModelState);
+                Console.WriteLine("Invalid model state");
+                return BadRequest("Error in model");
             }
 
-            var result = _customer.createComplaint(complaint);
+            var customer = _customer.findCustomerById(complaint.complanantId);
+            if (customer == null)
+            {
+                Console.WriteLine("Customer not found");
+                Console.WriteLine(complaint.complanantId.GetType());
+                Console.WriteLine(complaint.complanantId.ToString());
+                return NotFound("Customer not found");
+            }
+
+            var complainantEmail = customer.Email;
+
+            Complaint complaint1 = new Complaint();
+            complaint1.Complainant = complainantEmail;
+            complaint1.Accused = complaint.accused;
+            complaint1.ComplaintMessage = complaint.complaint;
+            complaint1.TimeStamp = DateTime.Now;
+
+            var result = _customer.createComplaint(complaint1);
             if (result)
             {
                 return Ok(result);
             }
             else
             {
-                Console.WriteLine("something went wrong");
-                return BadRequest(result);
+                Console.WriteLine("Something went wrong while creating complaint");
+                return BadRequest("Error in create complaint");
             }
         }
+
 
     }
 }

@@ -22,8 +22,10 @@ namespace backend.Controllers
             _config = config;
         }
 
+        // In your FieldWorkerController
+
         [HttpPost("createAccount")]
-        public IActionResult RequestAccount([FromBody] FieldWorker fieldWorker)
+        public IActionResult RequestAccount([FromForm] FieldWorker fieldWorker, IFormFile[] certificates, IFormFile[] experienceLetters, IFormFile NIC, IFormFile profile)
         {
             if (ModelState.IsValid)
             {
@@ -32,20 +34,32 @@ namespace backend.Controllers
                 Console.WriteLine(Password);
                 fieldWorker.Password = Password;
                 Console.WriteLine(fieldWorker.Password);
+
+                // Upload certificates and experience letters
+                fieldWorker.Certificates = _fieldWorker.UploadFiles(certificates);
+                fieldWorker.ExperienceLetter = _fieldWorker.UploadFiles(experienceLetters);
+
+
+                fieldWorker.NIC = _fieldWorker.UploadFile(NIC);
+                fieldWorker.ProfileImage = _fieldWorker.UploadFile(profile);
+
                 var result = _fieldWorker.signUp(fieldWorker);
 
                 if (result)
                 {
                     return Ok(result);
-                } else
+                }
+                else
                 {
                     return BadRequest("signup failed");
                 }
-            } else
+            }
+            else
             {
                 return BadRequest("Model failed");
             }
         }
+
 
         [HttpPost("login")]
         public IActionResult login([FromBody] LoginRequest fieldWorker)
@@ -123,6 +137,45 @@ namespace backend.Controllers
             }else
             {
                 return BadRequest("There is no project");
+            }
+        }
+
+
+        [HttpPost("complaint")]
+        public IActionResult makeComplaint([FromBody] ComplaintRequest complaint)
+        {
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("Invalid model state");
+                return BadRequest("Error in model");
+            }
+
+            var customer = _fieldWorker.findFieldWorkerById(complaint.complanantId);
+            if (customer == null)
+            {
+                Console.WriteLine("Field Worker not found");
+                Console.WriteLine(complaint.complanantId.GetType());
+                Console.WriteLine(complaint.complanantId.ToString());
+                return NotFound("FieldWorker not found");
+            }
+
+            var complainantEmail = customer.Email;
+
+            Complaint complaint1 = new Complaint();
+            complaint1.Complainant = complainantEmail;
+            complaint1.Accused = complaint.accused;
+            complaint1.ComplaintMessage = complaint.complaint;
+            complaint1.TimeStamp = DateTime.Now;
+
+            var result = _fieldWorker.createComplaint(complaint1);
+            if (result)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                Console.WriteLine("Something went wrong while creating complaint");
+                return BadRequest("Error in create complaint");
             }
         }
 
